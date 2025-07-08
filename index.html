@@ -38,8 +38,8 @@
 </head>
 <body>
     <div class="info">
-        <h1>Denver, Colorado</h1>
-        <p>Interactive map of the Mile High City</p>
+        <h1>Union Station Neighborhood</h1>
+        <p>Downtown Denver's historic transportation district</p>
     </div>
     
     <div id="map"></div>
@@ -49,68 +49,80 @@
             crossorigin=""></script>
     
     <script>
-        // Initialize the map centered on Denver
-        var map = L.map('map').setView([39.7392, -104.9903], 11);
+        // Initialize the map centered on Union Station
+        var map = L.map('map').setView([39.7539, -105.0008], 16);
 
         // Add OpenStreetMap tile layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Add marker for downtown Denver
-        var denverMarker = L.marker([39.7392, -104.9903]).addTo(map);
-        denverMarker.bindPopup("<b>Downtown Denver</b><br>The heart of the Mile High City").openPopup();
+        // Add marker for Union Station
+        var unionStationMarker = L.marker([39.7539, -105.0008]).addTo(map);
+        unionStationMarker.bindPopup("<b>Denver Union Station</b><br>Historic transportation hub").openPopup();
 
-        // Add some notable Denver landmarks
+        // Add nearby landmarks in the Union Station neighborhood
         var landmarks = [
             {
-                name: "Denver Union Station",
-                lat: 39.7539,
-                lng: -105.0008,
-                description: "Historic transportation hub"
+                name: "The Crawford Hotel",
+                lat: 39.7538,
+                lng: -105.0006,
+                description: "Boutique hotel inside Union Station"
             },
             {
-                name: "Denver Art Museum",
-                lat: 39.7373,
-                lng: -104.9892,
-                description: "Contemporary art museum"
+                name: "Terminal Bar",
+                lat: 39.7540,
+                lng: -105.0010,
+                description: "Historic bar in Union Station"
             },
             {
-                name: "Coors Field",
-                lat: 39.7559,
-                lng: -104.9942,
-                description: "Home of the Colorado Rockies"
+                name: "Millennium Bridge",
+                lat: 39.7545,
+                lng: -105.0005,
+                description: "Pedestrian bridge over the South Platte River"
             },
             {
-                name: "Denver Botanic Gardens",
-                lat: 39.7316,
-                lng: -104.9617,
-                description: "Beautiful botanical gardens"
+                name: "Commons Park",
+                lat: 39.7575,
+                lng: -105.0070,
+                description: "Riverside park with city views"
             },
             {
-                name: "Red Rocks Park",
-                lat: 39.6654,
-                lng: -105.2056,
-                description: "Famous outdoor amphitheater"
+                name: "Denver Skateboard Park",
+                lat: 39.7565,
+                lng: -105.0045,
+                description: "Popular skateboard park"
+            },
+            {
+                name: "Confluence Park",
+                lat: 39.7525,
+                lng: -105.0065,
+                description: "Where Cherry Creek meets the South Platte River"
+            },
+            {
+                name: "REI Denver Flagship",
+                lat: 39.7528,
+                lng: -105.0078,
+                description: "Outdoor gear flagship store"
             }
         ];
 
-        // Add markers for landmarks
+        // Add markers for nearby landmarks
         landmarks.forEach(function(landmark) {
             L.marker([landmark.lat, landmark.lng])
                 .addTo(map)
                 .bindPopup("<b>" + landmark.name + "</b><br>" + landmark.description);
         });
 
-        // Add a circle to show the Denver metro area
-        var circle = L.circle([39.7392, -104.9903], {
-            color: 'blue',
-            fillColor: '#30f',
+        // Add a circle to show the immediate Union Station area
+        var circle = L.circle([39.7539, -105.0008], {
+            color: 'red',
+            fillColor: '#f03',
             fillOpacity: 0.1,
-            radius: 15000
+            radius: 500
         }).addTo(map);
         
-        circle.bindPopup("Denver Metro Area");
+        circle.bindPopup("Union Station District");
     </script>
 </body>
 </html>
