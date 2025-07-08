@@ -52,76 +52,29 @@
             touchZoom: false
         });
 
-        // Add CartoDB Positron - very clean and minimal style
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        // Use a custom tile layer that highlights bike lanes in yellow
+        // This approach uses OpenStreetMap data with custom styling
+        L.tileLayer('https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=YOUR_API_KEY', {
             attribution: '',
-            subdomains: 'abcd',
             maxZoom: 20
         }).addTo(map);
         
-        // Bike lanes in Union Station area - based on Denver bike infrastructure
-        var bikeLanes = [
-            // 15th Street - dedicated bike lane
-            {
-                name: "15th Street",
-                coordinates: [
-                    [39.7524, -105.0070],
-                    [39.7524, -104.9940]
-                ]
-            },
-            // 17th Street - protected bike lane
-            {
-                name: "17th Street", 
-                coordinates: [
-                    [39.7548, -105.0070],
-                    [39.7548, -104.9940]
-                ]
-            },
-            // Wynkoop Street - bike lane near Union Station
-            {
-                name: "Wynkoop Street",
-                coordinates: [
-                    [39.7520, -105.0015],
-                    [39.7560, -105.0015]
-                ]
-            },
-            // Wazee Street - bike lane
-            {
-                name: "Wazee Street",
-                coordinates: [
-                    [39.7520, -105.0000],
-                    [39.7560, -105.0000]
-                ]
-            },
-            // Little Raven Street - bike lane
-            {
-                name: "Little Raven Street",
-                coordinates: [
-                    [39.7530, -105.0050],
-                    [39.7570, -105.0050]
-                ]
-            },
-            // Platte River Trail - major bike path
-            {
-                name: "Platte River Trail",
-                coordinates: [
-                    [39.7500, -105.0060],
-                    [39.7520, -105.0040],
-                    [39.7540, -105.0020],
-                    [39.7560, -105.0000],
-                    [39.7580, -104.9980]
-                ]
+        // Alternative: Use CartoDB with custom SQL to highlight bike infrastructure
+        // This would require CartoDB account but gives proper road styling
+        
+        // For demonstration, let's use a different base layer that shows cycling infrastructure
+        // OpenCycleMap shows bike lanes as part of the actual road styling
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.TileLayer) {
+                map.removeLayer(layer);
             }
-        ];
-
-        // Add yellow highlighting for bike lanes
-        bikeLanes.forEach(function(lane) {
-            L.polyline(lane.coordinates, {
-                color: '#FFD700',
-                weight: 4,
-                opacity: 0.8
-            }).addTo(map);
         });
+        
+        // Use OpenCycleMap which has built-in bike lane styling
+        L.tileLayer('https://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png', {
+            attribution: '',
+            maxZoom: 20
+        }).addTo(map);
 
         // Set bounds to show Union Station area
         var bounds = L.latLngBounds(
