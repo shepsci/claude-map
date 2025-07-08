@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Denver Bike Paths - Union Station Area</title>
+    <title>Denver Bike Lanes - Union Station Area</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
@@ -52,123 +52,102 @@
             maxZoom: 20
         }).addTo(map);
 
-        // Bike paths and roads within 5 miles of Union Station
-        var bikeRoutes = [
-            // Major bike trails
+        // Only actual bike lanes within 5 miles of Union Station
+        var bikeLanes = [
+            // 15th Street - protected bike lane
             {
-                name: "Cherry Creek Trail",
                 coordinates: [
-                    [39.7200, -105.0100],
-                    [39.7300, -105.0050],
-                    [39.7400, -105.0000],
-                    [39.7500, -104.9950],
-                    [39.7600, -104.9900],
-                    [39.7700, -104.9850]
+                    [39.7524, -105.0400],
+                    [39.7524, -105.0200],
+                    [39.7524, -105.0000],
+                    [39.7524, -104.9800],
+                    [39.7524, -104.9600]
                 ]
             },
+            // 17th Street - protected bike lane
             {
-                name: "Platte River Trail", 
                 coordinates: [
-                    [39.7100, -105.0250],
-                    [39.7200, -105.0200],
-                    [39.7350, -105.0150],
-                    [39.7500, -105.0100],
-                    [39.7650, -105.0050],
-                    [39.7800, -105.0000],
-                    [39.7900, -104.9950]
+                    [39.7548, -105.0400],
+                    [39.7548, -105.0200],
+                    [39.7548, -105.0000],
+                    [39.7548, -104.9800],
+                    [39.7548, -104.9600]
                 ]
             },
+            // Broadway - bike lane sections
             {
-                name: "High Line Canal Trail",
                 coordinates: [
-                    [39.6800, -104.9600],
-                    [39.7000, -104.9700],
-                    [39.7200, -104.9800],
+                    [39.7200, -104.9873],
+                    [39.7400, -104.9873],
+                    [39.7600, -104.9873]
+                ]
+            },
+            // Colfax Avenue - bike lane sections
+            {
+                coordinates: [
+                    [39.7400, -105.0300],
+                    [39.7400, -105.0100],
                     [39.7400, -104.9900],
-                    [39.7600, -105.0000]
+                    [39.7400, -104.9700]
                 ]
             },
-            
-            // Major bike-friendly streets
+            // Lawrence Street - bike lane
             {
-                name: "15th Street",
                 coordinates: [
-                    [39.7524, -105.0500],
-                    [39.7524, -105.0300],
-                    [39.7524, -105.0100],
-                    [39.7524, -104.9900],
-                    [39.7524, -104.9700],
-                    [39.7524, -104.9500]
+                    [39.7519, -105.0200],
+                    [39.7519, -105.0000],
+                    [39.7519, -104.9800]
                 ]
             },
+            // Blake Street - bike lane
             {
-                name: "17th Street",
                 coordinates: [
-                    [39.7548, -105.0500],
-                    [39.7548, -105.0300],
-                    [39.7548, -105.0100],
-                    [39.7548, -104.9900],
-                    [39.7548, -104.9700],
-                    [39.7548, -104.9500]
+                    [39.7560, -105.0200],
+                    [39.7560, -105.0000],
+                    [39.7560, -104.9800]
                 ]
             },
+            // Wynkoop Street - bike lane near Union Station
             {
-                name: "Broadway",
-                coordinates: [
-                    [39.7100, -104.9873],
-                    [39.7300, -104.9873],
-                    [39.7500, -104.9873],
-                    [39.7700, -104.9873],
-                    [39.7900, -104.9873]
-                ]
-            },
-            {
-                name: "Federal Boulevard",
-                coordinates: [
-                    [39.7100, -105.0252],
-                    [39.7300, -105.0252],
-                    [39.7500, -105.0252],
-                    [39.7700, -105.0252],
-                    [39.7900, -105.0252]
-                ]
-            },
-            {
-                name: "Colfax Avenue",
-                coordinates: [
-                    [39.7400, -105.0600],
-                    [39.7400, -105.0400],
-                    [39.7400, -105.0200],
-                    [39.7400, -105.0000],
-                    [39.7400, -104.9800],
-                    [39.7400, -104.9600]
-                ]
-            },
-            
-            // Additional connecting routes
-            {
-                name: "Wynkoop Street",
                 coordinates: [
                     [39.7520, -105.0015],
                     [39.7540, -105.0015],
                     [39.7560, -105.0015]
                 ]
             },
+            // 14th Street - bike lane sections
             {
-                name: "Little Raven Street", 
                 coordinates: [
-                    [39.7530, -105.0050],
-                    [39.7550, -105.0050],
-                    [39.7570, -105.0050]
+                    [39.7512, -105.0200],
+                    [39.7512, -105.0000],
+                    [39.7512, -104.9800]
+                ]
+            },
+            // 18th Street - bike lane sections
+            {
+                coordinates: [
+                    [39.7560, -105.0200],
+                    [39.7560, -105.0000],
+                    [39.7560, -104.9800]
+                ]
+            },
+            // Speer Boulevard - bike lane
+            {
+                coordinates: [
+                    [39.7350, -105.0050],
+                    [39.7400, -104.9950],
+                    [39.7450, -104.9850],
+                    [39.7500, -104.9750]
                 ]
             }
         ];
 
-        // Add all routes in simple blue
-        bikeRoutes.forEach(function(route) {
-            L.polyline(route.coordinates, {
+        // Add bike lanes in simple blue
+        bikeLanes.forEach(function(lane) {
+            L.polyline(lane.coordinates, {
                 color: '#0066cc',
                 weight: 3,
-                opacity: 0.7,
+                opacity: 0.8,
                 lineCap: 'round',
                 lineJoin: 'round'
             }).addTo(map);
