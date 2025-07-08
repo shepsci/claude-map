@@ -49,8 +49,18 @@
             crossorigin=""></script>
     
     <script>
-        // Initialize the map centered on Union Station
-        var map = L.map('map').setView([39.7539, -105.0008], 16);
+        // Initialize the map centered on Union Station - static view
+        var map = L.map('map', {
+            center: [39.7539, -105.0008],
+            zoom: 17,
+            zoomControl: false,
+            scrollWheelZoom: false,
+            doubleClickZoom: false,
+            boxZoom: false,
+            keyboard: false,
+            dragging: false,
+            touchZoom: false
+        });
 
         // Add OpenStreetMap tile layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -61,7 +71,7 @@
         var unionStationMarker = L.marker([39.7539, -105.0008]).addTo(map);
         unionStationMarker.bindPopup("<b>Denver Union Station</b><br>Historic transportation hub").openPopup();
 
-        // Add nearby landmarks in the Union Station neighborhood
+        // Only landmarks within 500m of Union Station
         var landmarks = [
             {
                 name: "The Crawford Hotel",
@@ -82,28 +92,16 @@
                 description: "Pedestrian bridge over the South Platte River"
             },
             {
-                name: "Commons Park",
-                lat: 39.7575,
-                lng: -105.0070,
-                description: "Riverside park with city views"
+                name: "Little Man Ice Cream",
+                lat: 39.7567,
+                lng: -105.0042,
+                description: "Famous ice cream shop in a milk can building"
             },
             {
-                name: "Denver Skateboard Park",
-                lat: 39.7565,
-                lng: -105.0045,
-                description: "Popular skateboard park"
-            },
-            {
-                name: "Confluence Park",
-                lat: 39.7525,
-                lng: -105.0065,
-                description: "Where Cherry Creek meets the South Platte River"
-            },
-            {
-                name: "REI Denver Flagship",
-                lat: 39.7528,
-                lng: -105.0078,
-                description: "Outdoor gear flagship store"
+                name: "Platte River Trail",
+                lat: 39.7555,
+                lng: -105.0015,
+                description: "Scenic walking and biking trail"
             }
         ];
 
@@ -114,7 +112,7 @@
                 .bindPopup("<b>" + landmark.name + "</b><br>" + landmark.description);
         });
 
-        // Add a circle to show the immediate Union Station area
+        // Add a circle to define the visible area boundary
         var circle = L.circle([39.7539, -105.0008], {
             color: 'red',
             fillColor: '#f03',
@@ -123,6 +121,14 @@
         }).addTo(map);
         
         circle.bindPopup("Union Station District");
+        
+        // Set max bounds to restrict view to circle area
+        var bounds = L.latLngBounds(
+            [39.7494, -105.0063], // Southwest corner
+            [39.7584, -104.9953]  // Northeast corner
+        );
+        map.setMaxBounds(bounds);
+        map.fitBounds(bounds);
     </script>
 </body>
 </html>
