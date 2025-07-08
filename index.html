@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Denver Map</title>
+    <title>Denver Bike Map - Union Station Area</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
@@ -11,21 +11,47 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
         }
         
         #map {
-            height: 600px;
-            width: 600px;
-            border-radius: 50%;
-            overflow: hidden;
+            height: 100vh;
+            width: 100%;
         }
         
-        /* Hide Leaflet attribution */
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .legend h4 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 4px;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+        
         .leaflet-control-attribution {
             display: none;
         }
@@ -33,56 +59,237 @@
 </head>
 <body>
     <div id="map"></div>
+    
+    <div class="legend">
+        <h4>Bike Friendliness</h4>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #00ff00;"></div>
+            <span>Separated bike lane</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #90EE90;"></div>
+            <span>Regular bike lane</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #FFD700;"></div>
+            <span>Good shoulder</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #FFA500;"></div>
+            <span>No bike lane/shoulder</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #FF4444;"></div>
+            <span>Heavy traffic</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #800080;"></div>
+            <span>Scenic/fun route</span>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
     
     <script>
-        // Initialize the map centered on Union Station - static view
-        var map = L.map('map', {
-            center: [39.7539, -105.0008],
-            zoom: 17,
-            zoomControl: false,
-            scrollWheelZoom: false,
-            doubleClickZoom: false,
-            boxZoom: false,
-            keyboard: false,
-            dragging: false,
-            touchZoom: false
-        });
+        // Initialize map centered on Union Station
+        var map = L.map('map').setView([39.7539, -105.0008], 12);
 
-        // Use a custom tile layer that highlights bike lanes in yellow
-        // This approach uses OpenStreetMap data with custom styling
-        L.tileLayer('https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=YOUR_API_KEY', {
+        // Add simple base map
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             attribution: '',
+            subdomains: 'abcd',
             maxZoom: 20
         }).addTo(map);
-        
-        // Alternative: Use CartoDB with custom SQL to highlight bike infrastructure
-        // This would require CartoDB account but gives proper road styling
-        
-        // For demonstration, let's use a different base layer that shows cycling infrastructure
-        // OpenCycleMap shows bike lanes as part of the actual road styling
-        map.eachLayer(function(layer) {
-            if (layer instanceof L.TileLayer) {
-                map.removeLayer(layer);
+
+        // Denver bike infrastructure data (5-mile radius from Union Station)
+        var bikeRoutes = [
+            // Separated bike lanes (green)
+            {
+                name: "Cherry Creek Trail",
+                type: "separated",
+                traffic: "light",
+                fun: true,
+                coordinates: [
+                    [39.7200, -105.0100],
+                    [39.7300, -105.0050],
+                    [39.7400, -105.0000],
+                    [39.7500, -104.9950],
+                    [39.7600, -104.9900]
+                ]
+            },
+            {
+                name: "Platte River Trail",
+                type: "separated",
+                traffic: "light", 
+                fun: true,
+                coordinates: [
+                    [39.7200, -105.0200],
+                    [39.7350, -105.0150],
+                    [39.7500, -105.0100],
+                    [39.7650, -105.0050],
+                    [39.7800, -105.0000]
+                ]
+            },
+            
+            // Protected bike lanes (light green)
+            {
+                name: "15th Street",
+                type: "protected",
+                traffic: "medium",
+                fun: false,
+                coordinates: [
+                    [39.7524, -105.0500],
+                    [39.7524, -105.0300],
+                    [39.7524, -105.0100],
+                    [39.7524, -104.9900],
+                    [39.7524, -104.9700]
+                ]
+            },
+            {
+                name: "17th Street", 
+                type: "protected",
+                traffic: "medium",
+                fun: false,
+                coordinates: [
+                    [39.7548, -105.0500],
+                    [39.7548, -105.0300],
+                    [39.7548, -105.0100],
+                    [39.7548, -104.9900],
+                    [39.7548, -104.9700]
+                ]
+            },
+            
+            // Regular bike lanes (yellow)
+            {
+                name: "Colfax Avenue",
+                type: "bike_lane",
+                traffic: "heavy",
+                fun: false,
+                coordinates: [
+                    [39.7400, -105.0500],
+                    [39.7400, -105.0300],
+                    [39.7400, -105.0100],
+                    [39.7400, -104.9900],
+                    [39.7400, -104.9700]
+                ]
+            },
+            {
+                name: "Broadway",
+                type: "bike_lane",
+                traffic: "medium",
+                fun: false,
+                coordinates: [
+                    [39.7200, -104.9873],
+                    [39.7400, -104.9873],
+                    [39.7600, -104.9873],
+                    [39.7800, -104.9873]
+                ]
+            },
+            
+            // Good shoulder roads (light orange)
+            {
+                name: "Federal Boulevard",
+                type: "shoulder",
+                traffic: "heavy",
+                fun: false,
+                coordinates: [
+                    [39.7200, -105.0252],
+                    [39.7400, -105.0252],
+                    [39.7600, -105.0252],
+                    [39.7800, -105.0252]
+                ]
+            },
+            
+            // Scenic/fun routes (purple)
+            {
+                name: "City Park Loop",
+                type: "separated",
+                traffic: "light",
+                fun: true,
+                coordinates: [
+                    [39.7500, -104.9500],
+                    [39.7550, -104.9450],
+                    [39.7600, -104.9500],
+                    [39.7550, -104.9550],
+                    [39.7500, -104.9500]
+                ]
+            },
+            
+            // Heavy traffic roads (red)
+            {
+                name: "I-25 Frontage",
+                type: "none",
+                traffic: "heavy",
+                fun: false,
+                coordinates: [
+                    [39.7200, -105.0100],
+                    [39.7400, -105.0080],
+                    [39.7600, -105.0060],
+                    [39.7800, -105.0040]
+                ]
             }
-        });
-        
-        // Use OpenCycleMap which has built-in bike lane styling
-        L.tileLayer('https://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png', {
-            attribution: '',
-            maxZoom: 20
-        }).addTo(map);
+        ];
 
-        // Set bounds to show Union Station area
-        var bounds = L.latLngBounds(
-            [39.7494, -105.0063], // Southwest corner
-            [39.7584, -104.9953]  // Northeast corner
-        );
-        map.setMaxBounds(bounds);
-        map.fitBounds(bounds);
+        // Color coding function
+        function getRouteColor(route) {
+            if (route.fun && route.traffic === "light") {
+                return "#800080"; // Purple for scenic/fun
+            }
+            if (route.traffic === "heavy") {
+                return "#FF4444"; // Red for heavy traffic
+            }
+            
+            switch(route.type) {
+                case "separated":
+                    return "#00ff00"; // Bright green
+                case "protected":
+                    return "#90EE90"; // Light green
+                case "bike_lane":
+                    return "#FFD700"; // Gold
+                case "shoulder":
+                    return "#FFA500"; // Orange
+                default:
+                    return "#FF4444"; // Red for no infrastructure
+            }
+        }
+
+        // Add routes to map
+        bikeRoutes.forEach(function(route) {
+            var color = getRouteColor(route);
+            var weight = route.fun ? 6 : 4;
+            var opacity = route.traffic === "heavy" ? 0.7 : 0.9;
+            
+            L.polyline(route.coordinates, {
+                color: color,
+                weight: weight,
+                opacity: opacity,
+                lineCap: 'round',
+                lineJoin: 'round'
+            }).addTo(map).bindPopup(
+                "<b>" + route.name + "</b><br>" +
+                "Type: " + route.type.replace("_", " ") + "<br>" +
+                "Traffic: " + route.traffic + "<br>" +
+                "Fun factor: " + (route.fun ? "High" : "Low")
+            );
+        });
+
+        // Add Union Station marker
+        L.marker([39.7539, -105.0008])
+            .addTo(map)
+            .bindPopup("<b>Union Station</b><br>Starting point")
+            .openPopup();
+
+        // Add 5-mile radius circle
+        L.circle([39.7539, -105.0008], {
+            color: '#666',
+            fillColor: 'transparent',
+            fillOpacity: 0,
+            radius: 8047, // 5 miles in meters
+            weight: 1,
+            dashArray: '5, 5'
+        }).addTo(map);
     </script>
 </body>
 </html>
